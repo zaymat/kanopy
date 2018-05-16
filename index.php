@@ -37,7 +37,7 @@ foreach($json as $commit){
         $res = $db->query("SELECT * FROM `commits`");
         while ($commit = $res->fetch()){
         ?>
-        <li><a href="commit.php"><?php echo $commit["sha"]; ?></a></li>
+        <li><a href=<?php echo "commit.php?id=" . $commit["sha"]; ?>><?php echo $commit["sha"]; ?></a></li>
         <?php
         }
         $res->closeCursor(); ?>

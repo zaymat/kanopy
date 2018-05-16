@@ -1,6 +1,15 @@
 <?php 
 require_once("./db.php");
 $db = connectDB();
+
+if (isset($_GET['id'])) // On a le nom et le prénom
+{
+	$id = $_GET['id'];
+}
+else // Il manque des paramètres, on avertit le visiteur
+{
+	echo 'Error: commit ID is missing';
+}
 ?>
 
 <!DOCTYPE html>
@@ -15,13 +24,15 @@ $db = connectDB();
 <body>
     <ul>
         <?php
-        $res = $db->query("SELECT * FROM `commits` JOIN authors on commits.authorID = authors.id");
+        $res = $db->prepare("SELECT * FROM `commits` JOIN authors on commits.authorID = authors.id WHERE sha=?");
+        $res->execute(array($id));
         while ($commit = $res->fetch()){
         ?>
-        <li><img src=<?php echo $commit["image"]; ?> alt="Mountain View"></li>
+        <li><img src=<?php echo $commit["image"]; ?> class="avatar"></li>
         <?php
         }
         $res->closeCursor(); ?>
     </ul>
+    <a href="index.php">Return to main page</a>
 </body>
 </html>
