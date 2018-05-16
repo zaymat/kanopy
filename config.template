@@ -1,0 +1,6 @@
+{
+    "hostname": "mariadb",
+    "username": "admin",
+    "password": "password",
+    "database": "commit"
+}
