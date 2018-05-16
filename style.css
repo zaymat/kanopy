@@ -1,0 +1,9 @@
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style-type: none;
+    border-width: 1px;
+    border-style: solid;
+}
