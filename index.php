@@ -33,17 +33,32 @@ foreach($json as $commit){
     <title>Kanopy</title>
 </head>
 <body>
+    <div class="col-12 title display1">
+        <h1>List of commits</h1>
+    </div>
     <div class="list-group col-6">
         <?php
-        $res = $db->query("SELECT * FROM `commits` JOIN authors on commits.authorID = authors.id ORDER BY `date` DESC");
+        // We perform a External Join to ensure all commits are printed even if there is no committer
+        $res = $db->query("SELECT * FROM `commits` LEFT JOIN authors on commits.committerID = authors.id ORDER BY `date` DESC");
         while ($commit = $res->fetch()){
         ?>
         <a href=<?php echo "commit.php?id=" . $commit["sha"]; ?> class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1"><?php echo substr($commit["msg"], 0, 30) . " ..."; ?></h5>
-                <small><?php echo $commit["date"];?></small>
+                <h5 class="mb-1">
+                <?php
+                if(strlen($commit["msg"]) <= 30){
+                    echo $commit["msg"];
+                }
+                else{
+                    echo substr($commit["msg"], 0, 30) . " ..."; 
+                }
+                ?>
+                </h5>
+                <small><?php echo substr($commit["sha"], 0, 10); ?></small>
             </div>
-            <small><?php echo $commit["sha"]; ?></small>
+            <img src=<?php echo $commit["image"]; ?> style="width: 3vh">
+            <small><? echo $commit["committerName"];?> committed at <?php echo $commit["date"];?></small>
+            
         </a>
         <?php
         }

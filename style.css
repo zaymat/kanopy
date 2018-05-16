@@ -1,15 +1,16 @@
-a {
-    text-decoration: none;
-    color: black;
-}
-
-li {
-    list-style-type: none;
-    border-width: 1px;
-    border-style: solid;
-}
-
 .avatar{
-    border-radius: 100%;
     width: 10vh;
+}
+
+.title{
+    margin: 0px;
+    text-align: center;
+    border-radius: 4px;
+    border-style: solid;
+    border-color: lightgray; 
+    border-width: 1px;
+}
+
+body{
+    margin: 0px;
 }
