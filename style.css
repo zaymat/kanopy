@@ -14,3 +14,37 @@
 body{
     margin: 0px;
 }
+
+.redline{
+    font-size: small;
+    color: lightslategray;
+    background-color: #FFEEF0;
+}
+
+.greenline{
+    font-size: small;
+    color: lightslategray;
+    background-color: #E6FFED;
+}
+
+.hunk{
+    font-size: small;
+    color: lightslategray;
+    background-color: lightgray;
+}
+
+.normal{
+    font-size: small;
+    color: lightslategray;
+}
+
+.patch{
+    margin-left: 20vh;
+    margin-right: 20vh;
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+    justify-content: center;
+    border-style: solid;
+    border-color: lightslategray;
+    border-width: 1px;
+}
