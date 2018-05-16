@@ -2,15 +2,34 @@
 require_once("./db.php");
 $db = connectDB();
 
-if (isset($_GET['id'])) // On a le nom et le prénom
+if (isset($_GET['id'])) 
 {
 	$id = $_GET['id'];
 }
-else // Il manque des paramètres, on avertit le visiteur
+else
 {
 	echo 'Error: commit ID is missing';
 }
+
+
+function getPatches($url){
+    $curl = curl_init();
+
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('User-Agent: zaymat'));
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_COOKIESESSION, true);
+
+    $ret = curl_exec($curl);
+
+    curl_close($curl);
+
+    $patches = json_decode($ret, true);
+
+    return $patches["files"];
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

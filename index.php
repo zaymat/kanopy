@@ -14,6 +14,7 @@ curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_COOKIESESSION, true);
 
 $ret = curl_exec($curl);
+curl_close($curl);
 
 $json = json_decode($ret, true);
 
