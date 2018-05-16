@@ -25,7 +25,6 @@ function getPatches($url){
     curl_close($curl);
 
     $patches = json_decode($ret, true);
-
     return $patches["files"];
 }
 ?>
