@@ -43,8 +43,6 @@ function commitToDB($commit, $db){
                         $commit["author"]["id"],
                         $date,
                         $commit["commit"]["message"]));
-    
-    echo $commit["author"]["id"] . ":" . $commit["sha"] . "\n";
 
     // Check if the author is already in the database
     $res = $db->prepare("SELECT * FROM `authors` WHERE id=?");
