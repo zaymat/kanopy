@@ -78,7 +78,7 @@ function getPatches($url){
     $patches = preg_replace("#^\+(.*)#m", "<tr><th class=\"greenline\" scope=\"row\">$0</th></tr>",$patches);
     $patches = preg_replace("#^@@(.*)#m", "<tr><th class=\"hunk\" scope=\"row\">$0</th></tr>",$patches);
     $patches = preg_replace("#^( *)$#m", "", $patches);
-    $patches = preg_replace("#^[^+@<-]([^ ]+)(.*)#m", "<tr><th class=\"normal\" scope=\"row\">$0</th></tr>", $patches);
+    $patches = preg_replace("#^[^+@<-].*#m", "<tr><th class=\"normal\" scope=\"row\">$0</th></tr>", $patches);
     $patches = preg_replace("#\\t#", "&emsp;", $patches);
     ?>
     
