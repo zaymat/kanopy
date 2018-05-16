@@ -24,7 +24,7 @@ function createTables($db){
         $db->exec("CREATE TABLE IF NOT EXISTS `authors` (id INT UNSIGNED PRIMARY KEY, `name` VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, `image` VARCHAR(255) NOT NULL, `login` VARCHAR(255) NOT NULL) ENGINE=InnoDB;");
 
         // Create commits table
-        $db->exec("CREATE TABLE IF NOT EXISTS `commits` (sha VARCHAR(255) NOT NULL PRIMARY KEY, authorID INT NOT NULL, `message` VARCHAR(255) NOT NULL) ENGINE=InnoDB;");
+        $db->exec("CREATE TABLE IF NOT EXISTS `commits` (sha VARCHAR(255) NOT NULL PRIMARY KEY, authorID INT, msg VARCHAR(2048) NOT NULL) ENGINE=InnoDB;");
     }
     catch(Exception $e)
     {
@@ -39,6 +39,8 @@ function commitToDB($commit, $db){
                         $commit["author"]["id"],
                         //$commit["commit"]["author"]["date"],
                         $commit["commit"]["message"]));
+    
+    echo $commit["author"]["id"] . ":" . $commit["sha"] . "\n";
 
     // Check if the author is already in the database
     $res = $db->prepare("SELECT * FROM `authors` WHERE id=?");
@@ -52,8 +54,8 @@ function commitToDB($commit, $db){
                             $commit["commit"]["author"]["email"],
                             $commit["author"]["avatar_url"],
                             $commit["author"]["login"]));
-        $res->closeCursor();
     }
+    $res->closeCursor();
 
 }
 
