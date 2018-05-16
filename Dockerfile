@@ -1,4 +1,2 @@
-FROM php:latest
-COPY . /usr/src/kanopy
-WORKDIR /usr/src/kanopy
-CMD [ "php", "./index.php" ]
+FROM php:7.2-apache
+RUN docker-php-ext-install pdo pdo_mysql

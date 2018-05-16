@@ -13,8 +13,7 @@ services:
       depends_on:
         - mariadb
       volumes:
-        - ./:/kanopy
-      working_dir: /kanopy
+        - ./:/var/www/html
       ports:
         - 8080:80
 
