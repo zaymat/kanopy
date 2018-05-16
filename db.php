@@ -24,7 +24,7 @@ function createTables($db){
         $db->exec("CREATE TABLE IF NOT EXISTS `authors` (id INT UNSIGNED PRIMARY KEY, `name` VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, `image` VARCHAR(255) NOT NULL, `login` VARCHAR(255) NOT NULL) ENGINE=InnoDB;");
 
         // Create commits table
-        $db->exec("CREATE TABLE IF NOT EXISTS `commits` (sha VARCHAR(255) NOT NULL PRIMARY KEY, authorID INT, msg VARCHAR(2048) NOT NULL) ENGINE=InnoDB;");
+        $db->exec("CREATE TABLE IF NOT EXISTS `commits` (sha VARCHAR(255) NOT NULL PRIMARY KEY, authorID INT, `date` DATETIME, msg VARCHAR(2048) NOT NULL) ENGINE=InnoDB;");
     }
     catch(Exception $e)
     {
@@ -34,10 +34,14 @@ function createTables($db){
 
 
 function commitToDB($commit, $db){
-    $req = $db->prepare("INSERT INTO `commits` VALUES (?, ?, ?)");
+    // parse date to fit SQL requirements
+    $date = preg_replace("#^(.+)T(.+)Z$#","$1 $2", $commit["commit"]["author"]["date"]);
+
+    // Insert commit in the db
+    $req = $db->prepare("INSERT INTO `commits` VALUES (?, ?, ?, ?)");
     $req->execute(array($commit["sha"],
                         $commit["author"]["id"],
-                        //$commit["commit"]["author"]["date"],
+                        $date,
                         $commit["commit"]["message"]));
     
     echo $commit["author"]["id"] . ":" . $commit["sha"] . "\n";
