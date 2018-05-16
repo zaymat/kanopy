@@ -29,15 +29,22 @@ foreach($json as $commit){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <title>Kanopy</title>
 </head>
 <body>
-    <ul>
+    <div class="list-group col-6">
         <?php
-        $res = $db->query("SELECT * FROM `commits`");
+        $res = $db->query("SELECT * FROM `commits` JOIN authors on commits.authorID = authors.id ORDER BY `date` DESC");
         while ($commit = $res->fetch()){
         ?>
-        <li><a href=<?php echo "commit.php?id=" . $commit["sha"]; ?>><?php echo $commit["sha"]; ?></a></li>
+        <a href=<?php echo "commit.php?id=" . $commit["sha"]; ?> class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"><?php echo substr($commit["msg"], 0, 30) . " ..."; ?></h5>
+                <small><?php echo $commit["date"];?></small>
+            </div>
+            <small><?php echo $commit["sha"]; ?></small>
+        </a>
         <?php
         }
         $res->closeCursor(); ?>
