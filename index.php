@@ -37,33 +37,37 @@ foreach($json as $commit){
     <div class="col-12 title display1">
         <h1>List of commits</h1>
     </div>
-    <div class="list-group col-6">
-        <?php
-        // We perform a External Join to ensure all commits are printed even if there is no committer
-        $res = $db->query("SELECT * FROM `commits` LEFT JOIN authors on commits.committerID = authors.id ORDER BY `date` DESC");
-        while ($commit = $res->fetch()){
-        ?>
-        <a href=<?php echo "commit.php?id=" . $commit["sha"]; ?> class="list-group-item list-group-item-action flex-column align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">
-                <?php
-                if(strlen($commit["msg"]) <= 30){
-                    echo $commit["msg"];
-                }
-                else{
-                    echo substr($commit["msg"], 0, 30) . " ..."; 
-                }
-                ?>
-                </h5>
-                <small><?php echo substr($commit["sha"], 0, 10); ?></small>
-            </div>
-            <img src=<?php echo $commit["image"]; ?> style="width: 3vh">
-            <small><? echo $commit["committerName"];?> committed at <?php echo $commit["date"];?></small>
-            
-        </a>
-        <?php
-        }
-        $res->closeCursor(); ?>
-    </ul>
+    <?php
+    // We perform a External Join to ensure all commits are printed even if there is no committer
+    $res = $db->query("SELECT * FROM `commits` LEFT JOIN authors on commits.committerID = authors.id ORDER BY `date` DESC");
+    while ($commit = $res->fetch()){
+    ?>
+    <div class="row">
+        <div class="col-sm-3">
+        </div>
+        <div class=" list-group col-sm-6">
+            <a href=<?php echo "commit.php?id=" . $commit["sha"]; ?> class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">
+                    <?php
+                    if(strlen($commit["msg"]) <= 30){
+                        echo $commit["msg"];
+                    }
+                    else{
+                        echo substr($commit["msg"], 0, 30) . " ..."; 
+                    }
+                    ?>
+                    </h5>
+                    <small><?php echo substr($commit["sha"], 0, 10); ?></small>
+                </div>
+                <img src=<?php echo $commit["image"]; ?> style="width: 3vh">
+                <small><? echo $commit["committerName"];?> committed at <?php echo $commit["date"];?></small>
+            </a>
+        </div>
+    </div>
+    <?php
+    }
+    $res->closeCursor(); 
+    ?>
 </body>
 </html>
