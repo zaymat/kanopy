@@ -14,7 +14,7 @@ This project requires :
 ### With Docker
 
 ```
-mv config.template config.json
+mv src/config.template src/config.json
 docker-compose up
 ```
 
@@ -27,6 +27,8 @@ The website is available at ```localhost:8080```
 ```
 git clone https://github.com/zaymat/kanopy /var/www/html
 cd /var/www/html
+mv src/* .
+rm -r src
 mv config.template config.json
 ```
 (We assume that your apache server serves /var/www/html)
