@@ -8,7 +8,13 @@ createTables($db);
 // Curl the API to get the data
 $curl = curl_init();
 
-curl_setopt($curl, CURLOPT_URL, 'https://api.github.com/repos/torvalds/linux/commits');
+$url = "https://api.github.com/repos/torvalds/linux/commits";
+
+if(isset($_GET["url"])){
+    $url = $_GET["url"];
+}
+
+curl_setopt($curl, CURLOPT_URL, $url);
 curl_setopt($curl, CURLOPT_HTTPHEADER, array('User-Agent: zaymat'));
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_COOKIESESSION, true);
@@ -34,9 +40,15 @@ foreach($json as $commit){
     <title>Kanopy</title>
 </head>
 <body>
-    <div class="col-12 title display1">
-        <h1>List of commits</h1>
+    <div class="row">
+        <div class="col-12 input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Search</span>
+            </div>
+            <input placeholder=<?php echo $url ?> type="text" class="form-control" id="basic-url" name="url" aria-describedby="basic-addon3" formaction="index.php" formmethod="get">
+        </div>
     </div>
+    
     <?php
     // We perform a External Join to ensure all commits are printed even if there is no committer
     $res = $db->query("SELECT * FROM `commits` LEFT JOIN authors on commits.committerID = authors.id ORDER BY `date` DESC");
@@ -45,7 +57,7 @@ foreach($json as $commit){
     <div class="row">
         <div class="col-sm-3">
         </div>
-        <div class=" list-group col-sm-6">
+        <div class="list-group col-sm-6">
             <a href=<?php echo "commit.php?id=" . $commit["sha"]; ?> class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">
