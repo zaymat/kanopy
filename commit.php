@@ -42,66 +42,70 @@ function getPatches($url){
 </head>
 <body>
 <?php
-    $res = $db->prepare("SELECT * FROM `commits` JOIN authors on commits.authorID = authors.id WHERE sha=?");
-    $res->execute(array($id));
-    $commit = $res->fetch();
+    $author = $db->prepare("SELECT * FROM `commits` LEFT JOIN authors on commits.authorID = authors.id WHERE sha=?");
+    $author->execute(array($id));
+    $commit_author = $author->fetch();
+
+    $committer = $db->prepare("SELECT * FROM `commits` LEFT JOIN authors on commits.committerID = authors.id WHERE sha=?");
+    $committer->execute(array($id));
+    $commit_committer = $committer->fetch();
+
+    $author->closeCursor(); 
+    $committer->closeCursor(); 
+ 
+    $patches = getPatches($commit_author["url"]);
     ?>
 
-    <a href=<?php echo "commit.php?id=" . $commit["sha"]; ?> class="list-group-item list-group-item-action flex-column align-items-start">
-    <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">
+    <div class="jumbotron">
+        <h1 class="display-4">Commit message</h1>
+        <p>
+            <?php 
+                $msg = preg_replace("#\\n#", "<br>", $commit_author["msg"]);
+                echo preg_replace("#\\t#", "&emsp;", $msg); 
+            ?> 
+        </p>
+        <hr class="my-4">
+
+        <h1 class="display-4">Author</h1>
+        <a href=<?php echo $commit_author["authorUrl"]; ?>><img src=<?php echo $commit_author["image"]; ?> style="width: 10vh"></a>
+        <p class="lead">Name: <?php echo $commit_author["authorName"]; ?></p>
+        <p class="lead">Email: <?php echo $commit_author["email"]; ?></p>
+        <hr class="my-4">
+
+        <h1 class="display-4">Committer</h1>
+        <a href=<?php echo $commit_committer["authorUrl"]; ?>><img src=<?php echo $commit_committer["image"]; ?> style="width: 10vh"></a>
+        <p class="lead">Name: <?php echo $commit_committer["committerName"]; ?></p>
+        <p class="lead">Email: <?php echo $commit_committer["email"]; ?></p>
+        <hr class="my-4">
+
         <?php
-        if(strlen($commit["msg"]) <= 30){
-            echo $commit["msg"];
-        }
-        else{
-            echo substr($commit["msg"], 0, 30) . " ..."; 
+            foreach($patches as $patch){
+                $patches = preg_replace("#^-(.*)#m", "<tr><th class=\"redline\" scope=\"row\">$0</th></tr>", $patch["patch"]);
+                $patches = preg_replace("#^\+(.*)#m", "<tr><th class=\"greenline\" scope=\"row\">$0</th></tr>",$patches);
+                $patches = preg_replace("#^@@(.*)#m", "<tr><th class=\"hunk\" scope=\"row\">$0</th></tr>",$patches);
+                $patches = preg_replace("#^( *)$#m", "", $patches);
+                $patches = preg_replace("#^[^+@<-].*#m", "<tr><th class=\"normal\" scope=\"row\">$0</th></tr>", $patches);
+                $patches = preg_replace("#\\t#", "&emsp;", $patches);
+        ?>
+
+        <div class="patch">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" style="background-color: white"><?php echo $patch["filename"]; ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php echo $patches; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php 
         }
         ?>
-        </h5>
-        <small><?php echo substr($commit["sha"], 0, 10); ?></small>
-    </div>
-    <img src=<?php echo $commit["image"]; ?> style="width: 3vh">
-    <small><? echo $commit["committerName"];?> committed at <?php echo $commit["date"];?></small>
-    </a>
-    <?php
-    $res->closeCursor(); 
-    ?>
-
-    <?php 
-    $patches = getPatches($commit["url"]);
-    foreach($patches as $patch){
-    ?>
-
-    <?php 
-    $patches = preg_replace("#^-(.*)#m", "<tr><th class=\"redline\" scope=\"row\">$0</th></tr>", $patch["patch"]);
-    $patches = preg_replace("#^\+(.*)#m", "<tr><th class=\"greenline\" scope=\"row\">$0</th></tr>",$patches);
-    $patches = preg_replace("#^@@(.*)#m", "<tr><th class=\"hunk\" scope=\"row\">$0</th></tr>",$patches);
-    $patches = preg_replace("#^( *)$#m", "", $patches);
-    $patches = preg_replace("#^[^+@<-].*#m", "<tr><th class=\"normal\" scope=\"row\">$0</th></tr>", $patches);
-    $patches = preg_replace("#\\t#", "&emsp;", $patches);
-    ?>
-    
-    <div class="patch">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col"><?php echo $patch["filename"]; ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php echo $patches; ?>
-            </tbody>
-        </table>
-    </div>
-
-    <?php 
-    }
-    ?>
-    </div>
-
-    <div>
-        <a href="index.php" class="btn btn-primary">Return to main page</a>
+        <div>
+            <a href="index.php" class="btn btn-primary btn-lg">Return to main page</a>
+        </div>
     </div>
 </body>
 </html>
