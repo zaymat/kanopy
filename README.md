@@ -31,6 +31,7 @@ mv src/* .
 rm -r src
 mv config.template config.json
 ```
+Then modify config.json to fit your database configuration.
 (We assume that your apache server serves /var/www/html)
 
 The website is available at ```localhost:8080```
