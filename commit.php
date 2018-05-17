@@ -1,4 +1,6 @@
 <?php 
+
+// Connect to the database
 require_once("./db.php");
 $db = connectDB();
 
@@ -11,7 +13,7 @@ else
 	echo 'Error: commit ID is missing';
 }
 
-
+// This function returns all the patches listed in the api response
 function getPatches($url){
     $curl = curl_init();
 
@@ -42,10 +44,12 @@ function getPatches($url){
 </head>
 <body>
 <?php
+    // Select information about the author of the commit
     $author = $db->prepare("SELECT * FROM `commits` LEFT JOIN authors on commits.authorID = authors.id WHERE sha=?");
     $author->execute(array($id));
     $commit_author = $author->fetch();
 
+    // Select information about the committer of the commit
     $committer = $db->prepare("SELECT * FROM `commits` LEFT JOIN authors on commits.committerID = authors.id WHERE sha=?");
     $committer->execute(array($id));
     $commit_committer = $committer->fetch();
@@ -53,6 +57,7 @@ function getPatches($url){
     $author->closeCursor(); 
     $committer->closeCursor(); 
  
+    // Get the list of patches
     $patches = getPatches($commit_author["url"]);
     ?>
 
@@ -80,6 +85,8 @@ function getPatches($url){
 
         <?php
             foreach($patches as $patch){
+
+                // Parse patch to color additions and deletions
                 $patches = preg_replace("#^-(.*)#m", "<tr><th class=\"redline\" scope=\"row\">$0</th></tr>", $patch["patch"]);
                 $patches = preg_replace("#^\+(.*)#m", "<tr><th class=\"greenline\" scope=\"row\">$0</th></tr>",$patches);
                 $patches = preg_replace("#^@@(.*)#m", "<tr><th class=\"hunk\" scope=\"row\">$0</th></tr>",$patches);

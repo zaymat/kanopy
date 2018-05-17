@@ -1,6 +1,8 @@
 <?php
 
 require_once("./db.php");
+
+// Connect to the db and create table
 $db = connectDB();
 createTables($db);
 
@@ -8,8 +10,10 @@ createTables($db);
 // Curl the API to get the data
 $curl = curl_init();
 
+// By default, we curl the api for linux repository
 $url = "https://api.github.com/repos/torvalds/linux/commits";
 
+// We can pass another url by parameter in the url
 if(isset($_GET["url"])){
     $url = $_GET["url"];
 }
@@ -22,9 +26,11 @@ curl_setopt($curl, CURLOPT_COOKIESESSION, true);
 $ret = curl_exec($curl);
 curl_close($curl);
 
+// Decode api response
 $json = json_decode($ret, true);
 
 foreach($json as $commit){
+    // Store the commits in the database
     commitToDB($commit, $db);
 }
 ?>
@@ -50,8 +56,11 @@ foreach($json as $commit){
     </div>
     
     <?php
+
     // We perform a External Join to ensure all commits are printed even if there is no committer
     $res = $db->query("SELECT * FROM `commits` LEFT JOIN authors on commits.committerID = authors.id ORDER BY `date` DESC");
+    
+    // Print all commits
     while ($commit = $res->fetch()){
     ?>
     <div class="row">

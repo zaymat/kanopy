@@ -1,31 +1,37 @@
+/* remove margins from body */
 body{
     margin: 0px;
 }
 
+/* css class for git diff deletions */
 .redline{
     font-size: small;
     color: lightslategrey;
     background-color: #FFEEF0;
 }
 
+/* css class for git diff additions */
 .greenline{
     font-size: small;
     color: lightslategrey;
     background-color: #E6FFED;
 }
 
+/* css class for git diff hunk description */
 .hunk{
     font-size: small;
     color: lightslategray;
     background-color: lightgray;
 }
 
+/* css class for git diff normal lines */
 .normal{
     font-size: small;
     color: lightslategray;
     background-color: white;
 }
 
+/* css class for patch diplay */
 .patch{
     margin-left: 20vh;
     margin-right: 20vh;

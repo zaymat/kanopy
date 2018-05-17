@@ -3,8 +3,11 @@
 function connectDB(){
     try
     {
+        // Load configuration from file
         $config_json = file_get_contents("./config.json");
         $config = json_decode($config_json, true);
+
+        // Connect to the database
         $db = new PDO("mysql:host=" . $config["hostname"] . ";dbname=" . $config["database"] . ";charset=utf8", $config["username"] , $config["password"]);
         return $db;
     }
@@ -33,6 +36,7 @@ function createTables($db){
 }
 
 function commitToDB($commit, $db){
+
     // parse date to fit SQL requirements
     $date = preg_replace("#^(.+)T(.+)Z$#","$1 $2", $commit["commit"]["author"]["date"]);
 
@@ -52,6 +56,7 @@ function commitToDB($commit, $db){
     $list = ["author", "committer"];
 
     foreach($list as $item){
+        
         // Check if the author is already in the database
         $res = $db->prepare("SELECT * FROM `authors` WHERE id=?");
         $res->execute(array($commit[$item]["id"]));
