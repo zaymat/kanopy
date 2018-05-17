@@ -1,0 +1,3 @@
+* Use a docker container for your project
+* Great design (at least an attempt)
+* Modularity of the app, using the GitHub API to show commits of different projects
