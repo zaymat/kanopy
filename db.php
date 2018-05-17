@@ -21,7 +21,7 @@ function createTables($db){
         $db->exec("DROP TABLE IF EXISTS `authors`");
 
         // Create authors table
-        $db->exec("CREATE TABLE IF NOT EXISTS `authors` (id INT UNSIGNED PRIMARY KEY, `name` VARCHAR(255), email VARCHAR(255) , `image` VARCHAR(255), `login` VARCHAR(255)) ENGINE=InnoDB;");
+        $db->exec("CREATE TABLE IF NOT EXISTS `authors` (id INT UNSIGNED PRIMARY KEY, `name` VARCHAR(255), email VARCHAR(255) , `image` VARCHAR(255), `login` VARCHAR(255), `authorUrl` VARCHAR(255)) ENGINE=InnoDB;");
 
         // Create commits table
         $db->exec("CREATE TABLE IF NOT EXISTS `commits` (sha VARCHAR(255) NOT NULL PRIMARY KEY, authorID INT, authorName VARCHAR(255), committerID INT, committerName VARCHAR(255), `date` DATETIME, msg TEXT, `url` VARCHAR(255)) ENGINE=InnoDB;");
@@ -58,12 +58,13 @@ function commitToDB($commit, $db){
 
         // Create a new user if the author is not in the db
         if(!$res->fetch()){
-            $req = $db->prepare("INSERT INTO authors VALUES (?, ?, ?, ?, ?)");
+            $req = $db->prepare("INSERT INTO authors VALUES (?, ?, ?, ?, ?, ?)");
             $req->execute(array($commit[$item]["id"],
                                 $commit["commit"][$item]["name"],
                                 $commit["commit"][$item]["email"],
                                 $commit[$item]["avatar_url"],
-                                $commit[$item]["login"]));
+                                $commit[$item]["login"],
+                                $commit[$item]["html_url"]));
         }
         $res->closeCursor();
     }
